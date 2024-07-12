@@ -1,0 +1,11 @@
+# modulos
+node_modules/
+
+# salida
+.next/
+
+.env
+
+#archivo generado
+next-env.d.ts
+.vercel
