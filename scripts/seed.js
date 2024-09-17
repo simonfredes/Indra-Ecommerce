@@ -13,7 +13,6 @@ const createTables = async () => {
         size VARCHAR(10)
       );
     `;
-    console.log('Tables created successfully.');
   } catch (error) {
     console.error('Error creating tables:', error);
   }
@@ -39,6 +38,51 @@ const seedData = async () => {
       quantity: 2,
       size: 'L'
     },
+    {
+      name: 'Remeron',
+      price: 15,
+      image: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg',
+      stock: 20,
+      seller: 'Vendedor 3',
+      quantity: 2,
+      size: 'L'
+    },
+    {
+      name: 'Remeron',
+      price: 10,
+      image: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg',
+      stock: 10,
+      seller: 'Vendedor 4',
+      quantity: 2,
+      size: 'M'
+    },
+    {
+      name: 'lompa',
+      price: 10,
+      image: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg',
+      stock: 20,
+      seller: 'Vendedor 2',
+      quantity: 2,
+      size: 'L'
+    },
+    {
+      name: 'gorra',
+      price: 19.99,
+      image: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg',
+      stock: 20,
+      seller: 'Vendedor 2',
+      quantity: 2,
+      size: 'L'
+    },
+    {
+      name: 'Ojotas',
+      price: 5.35,
+      image: 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg',
+      stock: 20,
+      seller: 'Vendedor 2',
+      quantity: 2,
+      size: 'L'
+    },
     
   ];
 
@@ -49,7 +93,6 @@ const seedData = async () => {
         VALUES (${product.name}, ${product.price}, ${product.image}, ${product.stock}, ${product.seller}, ${product.quantity}, ${product.size})
       `;
     }
-    console.log('Data seeded successfully.');
   } catch (error) {
     console.error('Error seeding data:', error);
   }

@@ -9,33 +9,26 @@ const handler = NextAuth({
   },
   pages: {
     signIn: '/login',
+    signOut: '/',
   },
   providers: [
     CredentialsProvider({
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        //
-        const response = await sql`
-        SELECT * FROM users WHERE email=${credentials?.email}`;
-        const user = response.rows[0];
-
-        const passwordCorrect = await compare(
-          credentials?.password || '',
-          user.password
-        );
-
-        console.log({ passwordCorrect });
-
-        if (passwordCorrect) {
-          return {
-            id: user.id,
-            email: user.email,
-          };
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
 
+        const response = await sql`
+        SELECT * FROM users WHERE email=${credentials.email}`;
+        const user = response.rows[0];
+
+        if (user && await compare(credentials.password, user.password)) {
+          return { id: user.id, email: user.email };
+        }
         return null;
       },
     }),

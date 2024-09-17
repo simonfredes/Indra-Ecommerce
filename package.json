@@ -13,14 +13,21 @@
     "@headlessui/react": "^2.0.4",
     "@heroicons/react": "^2.1.3",
     "@vercel/postgres": "^0.8.0",
+    "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
+    "mercadopago": "^2.0.10",
     "next": "14.2.3",
     "next-auth": "^4.24.7",
+    "next-cloudinary": "^6.6.2",
     "openssl": "^2.0.0",
     "react": "^18",
+    "react-confirm-alert": "^3.0.6",
     "react-dom": "^18",
-    "react-icons": "^5.2.1"
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.2.1",
+    "use-debounce": "10.0.1",
+    "vercel": "^34.2.7"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

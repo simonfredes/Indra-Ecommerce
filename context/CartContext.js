@@ -4,16 +4,18 @@ import { useRouter } from "next/navigation";
 import { createContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
-
+//TODO: ver por que no se carga la imagen en carrito, si se la paso pero no se carga en vista.
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   const router = useRouter;
 
   useEffect(() => {
+    if (!localStorage.getItem("cart")) {
+      localStorage.setItem("cart", JSON.stringify([]));
+    }
     setCartToState();
   }, []);
-
   const setCartToState = () => {
     setCart(
       localStorage.getItem("cart")
@@ -21,7 +23,9 @@ export const CartProvider = ({ children }) => {
         : []
     );
   };
-
+  const initializeCart = () => {
+    localStorage.setItem("cart", JSON.stringify([]));
+  }
   const addItemToCart = async ({
     product,
     name,
@@ -33,15 +37,13 @@ export const CartProvider = ({ children }) => {
   }) => {
     const item = {
       product,
-      name,
-      price,
-      image,
+      name: name,
+      price: price,
+      image: image,
       stock,
       seller,
       quantity,
     };
-    
-    console.log(item);
 
     const isItemExist = cart?.cartItems?.find(
       (i) => i.product === item.product
@@ -92,6 +94,7 @@ export const CartProvider = ({ children }) => {
         deleteItemFromCart,
         increaseQuantity,
         decreaseQuantity,
+        initializeCart,
       }}
     >
       {children}

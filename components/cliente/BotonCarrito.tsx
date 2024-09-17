@@ -1,24 +1,37 @@
 'use client'
 import { useContext } from "react"
 import CartContext from "@/context/CartContext"
+import { Producto } from "@/models/Producto"
+import toast from "react-hot-toast";
 
-export default function BotonCarrito({productId}: {productId: number}) {
+export default function BotonCarrito({ producto }: { producto: Producto }) {
+    const productId = producto.id;
+    const { addItemToCart, cart, initializeCart } = useContext(CartContext)
 
-    const {addItemToCart} = useContext(CartContext)
-    
     const addToCartHandler = () => {
-        console.log(productId)
-        addItemToCart({product:  productId, quantity: 1}) //aca, tengo que llenar los parametros que recibe addItemToCart
-                                                          //TODO> recibir el item, desglosarlo, y pasarle al additemToCart
-                                                          // los parametros desglosados.
-        
+        initializeCart();
+        try{
+        const productInCart = cart.cartItems.find((item: any) => item.product === productId);
+        console.log(productInCart)
+        if (productInCart) {
+            toast.error(producto.name + ' already in your cart.');
+        }
+        else {
+            toast.success(producto.name + ' added to your cart.');
+            addItemToCart({ product: productId, name: producto.name, price: producto.price, image: producto.image, quantity: 1 })
+
+
+        }
+    }catch(error){
+        toast.success(producto.name + ' added to your cart.');
+        addItemToCart({ product: productId, name: producto.name, price: producto.price, image: producto.image, quantity: 1 })
     }
-    function handlePress() {
-        console.log('click')
+
 
     }
-    
     return (
-        <button className= "btn btn-primary" onClick={addToCartHandler}>Add to cart</button>
+        <button className="btn btn-primary" onClick={addToCartHandler}>Add to cart</button>
     )
+
+
 }

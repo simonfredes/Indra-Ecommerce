@@ -1,11 +1,17 @@
-import {getServerSession} from 'next-auth';
+'use client';
 import Form from './form';
 import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
-export default async function LoginPage() {
-  const session = await getServerSession();
-  if (session) {
+export default function LoginPage() {
+  const { data: session, status } = useSession();
+  if (status === 'authenticated') {
     redirect('/');
   }
-  return <Form />;
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <Form />
+    </div>
+  );
 }

@@ -1,70 +1,86 @@
 'use client';
-import React, { useState } from 'react';
-import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+import React, { useContext, useEffect, useState } from "react";
+import Link from "next/link";
+import Logout from "@/app/logout";
+import Login from "@/app/login";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import CartContext from "@/context/CartContext";
 
-const Navbar = () => {
-  // State to manage the navbar's visibility
-  const [nav, setNav] = useState(false);
+export default function Navbar() {
+  const { data: session, status } = useSession();
+  const { cart } = useContext(CartContext);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // Toggle function to handle the navbar's display
-  const handleNav = () => {
-    setNav(!nav);
-  };
+  const totalItems = cart?.cartItems?.reduce((acc: number, item: CartItem) => acc + item.quantity, 0) || 0;
+  const subtotal = cart?.cartItems?.reduce((acc: number, item: CartItem) => acc + item.price * item.quantity, 0).toFixed(2) || "0.00";
 
-  // Array containing navigation items
-  const navItems = [
-    { id: 1, text: 'Home' },
-    { id: 2, text: 'Company' },
-    { id: 3, text: 'Resources' },
-    { id: 4, text: 'About' },
-    { id: 5, text: 'Carrito' },
-  ];
+  useEffect(() => {
+    if (status === "authenticated") {
+      setIsAdmin(session?.user?.email === "admin@admin.com");
+    }
+  }, [status, session]);
+
+  useEffect(() => {
+    console.log('Session status:', status);
+    console.log('Session data:', session);
+  }, [status, session]);
 
   return (
-    <div className='bg-black flex justify-between items-center h-24 max-w-[1240px] mx-auto px-4 text-white'>
-      {/* Logo */}
-      <h1 className='w-full text-3xl font-bold text-[#00df9a]'>REACT.</h1>
-
-      {/* Desktop Navigation */}
-      <ul className='hidden md:flex'>
-        {navItems.map(item => (
-          <li
-            key={item.id}
-            className='p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
-          >
-            {item.text}
-          </li>
-        ))}
-      </ul>
-
-      {/* Mobile Navigation Icon */}
-      <div onClick={handleNav} className='block md:hidden'>
-        {nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
+    <div className="navbar bg-base-100">
+      <div className="flex-1">
+        <a className="btn btn-ghost text-xl" href="/">Store</a>
       </div>
-
-      {/* Mobile Navigation Menu */}
-      <ul
-        className={
-          nav
-            ? 'fixed md:hidden left-0 top-0 w-[60%] h-full border-r border-r-gray-900 bg-[#000300] ease-in-out duration-500'
-            : 'ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]'
-        }
-      >
-        {/* Mobile Logo */}
-        <h1 className='w-full text-3xl font-bold text-[#00df9a] m-4'>REACT.</h1>
-
-        {/* Mobile Navigation Items */}
-        {navItems.map(item => (
-          <li
-            key={item.id}
-            className='p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600'
-          >
-            {item.text}
-          </li>
-        ))}
-      </ul>
+      <div className="flex-none">
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+            <div className="indicator">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span className="badge badge-sm indicator-item">{totalItems}</span>
+            </div>
+          </div>
+          <div tabIndex={0} className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
+            <div className="card-body">
+              <span className="font-bold text-lg">{totalItems} Items</span>
+              <span className="text-info">Subtotal: ${subtotal}</span>
+              <div className="card-actions">
+                <Link href="/carrito">
+                  <button className="btn btn-primary btn-block">View cart</button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+            <div className="w-10 rounded-full">
+              {status === "authenticated" ? (
+                <Image alt="User avatar" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" width={100} height={100} />
+              ) : (
+                <Image alt="Default avatar" src="https://www.w3schools.com/w3images/avatar1.png" width={100} height={100} />
+              )}
+            </div>
+          </div>
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            {status === "authenticated" ? (
+              <>
+                <Logout />
+                {isAdmin && (
+                  <li>
+                    <Link href="/admin" className="btn btn-ghost text-md">
+                      Panel Admin
+                    </Link>
+                  </li>
+                )}
+              </>
+            ) : (
+              <Login />
+            )}
+          </ul>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Navbar;
+}
